@@ -1,0 +1,12 @@
+1. Create the Secret (recommended; keep secrets.create=false):
+   kubectl create secret generic {{ .Values.secrets.name }} \
+     --from-literal=POSTGRES_PASSWORD='CHANGE_ME' \
+     --from-literal=APP_PASSWORD_HASH='scrypt:...$...$...' \
+     --from-literal=FLASK_SECRET_KEY='CHANGE_ME'
+
+2. Install:
+   helm install {{ .Release.Name }} .
+
+3. Port-forward:
+   kubectl port-forward svc/{{ include "kfirs-app.appServiceName" . }} 8080:{{ .Values.app.service.port }}
+

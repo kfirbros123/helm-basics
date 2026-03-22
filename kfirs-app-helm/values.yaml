@@ -1,0 +1,41 @@
+nameOverride: ""
+fullnameOverride: ""
+
+config:
+  postgresDb: kfirs_app
+  postgresUser: kfirs_user
+  postgresPort: "5432"
+  appUsername: kfire312
+  sessionCookieSecure: "false"
+
+secrets:
+  # If false: create the Secret yourself and set secrets.name to it.
+  # If true: this chart creates the Secret using the values below.
+  create: false
+  name: kfirs-app-secrets
+
+  postgresPassword: ""
+  appPasswordHash: ""
+  flaskSecretKey: ""
+
+postgres:
+  image: postgres:16
+  storage:
+    size: 1Gi
+
+app:
+  replicas: 1
+  image: kfire312/kfirs-app:v2
+  imagePullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8080
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  host: ""
+  path: /
+  pathType: Prefix
+

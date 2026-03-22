@@ -1,0 +1,10 @@
+﻿apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kfirs-app-config
+data:
+  POSTGRES_HOST: "db"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "kfirs_app"
+  POSTGRES_USER: "kfirs_user"
+  APP_USERNAME: "kfire312"

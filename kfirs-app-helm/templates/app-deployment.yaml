@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kfirs-app.appServiceName" . }}
+  labels:
+    {{- include "kfirs-app.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.app.replicas }}
+  selector:
+    matchLabels:
+      {{- include "kfirs-app.selectorLabels" . | nindent 6 }}
+      component: app
+  template:
+    metadata:
+      labels:
+        {{- include "kfirs-app.selectorLabels" . | nindent 8 }}
+        component: app
+    spec:
+      containers:
+        - name: kfirs-app
+          image: {{ .Values.app.image | quote }}
+          imagePullPolicy: {{ .Values.app.imagePullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "kfirs-app.configName" . }}
+                  key: POSTGRES_HOST
+            - name: POSTGRES_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "kfirs-app.configName" . }}
+                  key: POSTGRES_PORT
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "kfirs-app.configName" . }}
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "kfirs-app.configName" . }}
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kfirs-app.secretName" . }}
+                  key: POSTGRES_PASSWORD
+            - name: APP_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "kfirs-app.configName" . }}
+                  key: APP_USERNAME
+            - name: APP_PASSWORD_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kfirs-app.secretName" . }}
+                  key: APP_PASSWORD_HASH
+            - name: FLASK_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "kfirs-app.secretName" . }}
+                  key: FLASK_SECRET_KEY
+            - name: SESSION_COOKIE_SECURE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "kfirs-app.configName" . }}
+                  key: SESSION_COOKIE_SECURE
+          readinessProbe:
+            httpGet:
+              path: /api/auth
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /api/auth
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 6
+

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kfirs-app.appServiceName" . }}
+  labels:
+    {{- include "kfirs-app.labels" . | nindent 4 }}
+spec:
+  selector:
+    {{- include "kfirs-app.selectorLabels" . | nindent 4 }}
+    component: app
+  ports:
+    - name: http
+      port: {{ .Values.app.service.port }}
+      targetPort: 8080
+  type: {{ .Values.app.service.type }}
+
