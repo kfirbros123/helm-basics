@@ -14,9 +14,9 @@ secrets:
   create: false
   name: kfirs-app-secrets
 
-  postgresPassword: ""
-  appPasswordHash: ""
-  flaskSecretKey: ""
+  postgresPassword: "postgres_password"
+  appPasswordHash: "scrypt:32768:8:1$PJEaspYClxXbiyY6$b542cb3bbf4f4b1c397e2f938fe2974bab83bbd6e551a2c18df5080d7d77fef444b48f3773f13ac45fcec8e101ad9993ed182472b57bc9ac0d1b58556f95d16a"
+  flaskSecretKey: "THIS_IS_MY_LONG_RANDOM_STRING"
 
 postgres:
   image: postgres:16
